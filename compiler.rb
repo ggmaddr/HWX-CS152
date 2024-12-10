@@ -93,8 +93,6 @@ class AST
       end
     when 'let'
       bindings = @args[0].instance_variable_get:@args
-
-      puts "BINDING BODY", bindings
       bindings.each do |arg|
         var, value = arg
         comp_arg(value.to_i, bytecode) # Compile the value
@@ -105,7 +103,7 @@ class AST
         bytecode.push("STOR #{@@register_map[var]}") # Store value in the register
       end
 
-      puts "AFTER BIND", @@register_map
+      # puts "After binding", @@register_map
       body = @args[1..] # Extract body expressions
 
       # Generate bytecode for the body expressions
@@ -126,8 +124,7 @@ class AST
       bytecode.push("#{label_else}:")
       bytecode.concat(@args[2].to_bytecode) # Else branch
       bytecode.push("#{label_end}:")    
-    when ""
-      
+    when "" #Ignore "" op
     else
     
       raise "Unrecognized op '#{@op}'"
@@ -201,9 +198,7 @@ class Parser
     tokens = tokenize_line(line)
     ast = nil
     i = 0
-    puts"TOTAK TOKEN", tokens.to_s
     while (i <= tokens.length)
-      puts tokens[i]
       case tokens[i]
       when '('
         if tokens[i+1].start_with?("[")
@@ -217,8 +212,6 @@ class Parser
         if ast.parent then
           ast.parent.add_arg(ast)
           ast = ast.parent
-        else
-          puts "if NOT ast.parent ) EXIST?>"
         end
       when NUM_PAT
         if ast
@@ -231,13 +224,10 @@ class Parser
       when '#t'
         ast.add_arg(tokens[i])
       when '['
-        puts"get binding", tokens[i+1], tokens[i+2]
         ast.add_arg([tokens[i+1], tokens[i+2]])
         i+=3
       when /.+/ # If anything else matches (and is at least one char), raise an error
         if ast # If it’s a variable reference
-          puts "LETS ELSE"
-
           ast.add_arg(tokens[i]) # Treat it as an argument
         else
           raise "Unrecognized token: '#{tokens[i]}'"
@@ -245,7 +235,6 @@ class Parser
       end
       i += 1
     end
-    puts ast
     ast # Returning the abstract syntax tree
   end
 
@@ -277,10 +266,7 @@ class Compiler
       asts.each do |ast|
         if ast then
           puts "Parsing #{ast}"
-          puts "compiling asts", ast
-
           bytecode = ast.to_bytecode
-          
           out.puts bytecode
         end
       end

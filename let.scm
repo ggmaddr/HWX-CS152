@@ -3,4 +3,4 @@
 
 (let ([x 4]) (let ([y 2]) (println (+ x y))))
 (let ([x 4][y 2]) (println (+ x y)))
-
+(let ([a 1][b 8]) (println (* x a y b)))
