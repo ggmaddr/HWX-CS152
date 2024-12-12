@@ -4,12 +4,12 @@ PRINT_OP = /PRINT/ # pops the top number off of the stack and prints it
 ADD_OP = /ADD/ # pops the top two elements off the stack, adds them, and puts the result back on to the stack
 SUB_OP = /SUB/ # pops the top two elements off the stack, subtracts them, and ...
 MUL_OP = /MUL/ # pops the top two elements off the stack, multiplies them, and ...
-JMP_OP = /JMP (\w+)/ # unconditional jump to the specified label
-JZ_OP = /JZ (\w+)/ # pop the top value; jump to label if zero
-JNZ_OP = /JNZ (\w+)/ # pop the top value; jump to label if nonzero
-STOR_OP = /STOR (\d+)/ # store top stack value into register
-LOAD_OP = /LOAD (\d+)/ # load value from register to stack
-LABEL_OP = /^(\w+):$/ # define a label
+JMP_OP = /JMP (\w+)/ # unconditional jump 
+JZ_OP = /JZ (\w+)/ # pop jump if zero
+JNZ_OP = /JNZ (\w+)/ # pop jump if nonzero
+STOR_OP = /STOR (\d+)/ 
+LOAD_OP = /LOAD (\d+)/
+LABEL_OP = /^(\w+):$/ 
 
 class VirtualMachine
   def initialize
@@ -75,7 +75,6 @@ class VirtualMachine
         @registers[reg] = @stack.pop # Store top stack value in register
       when LOAD_OP
         reg = ln.sub(LOAD_OP, '\1').to_i
-        raise "Undefined register '#{reg}'" unless @registers.key?(reg)
         @stack.push(@registers[reg]) # Push register value to stack
       else
         raise "Unrecognized command: '#{ln}'"
